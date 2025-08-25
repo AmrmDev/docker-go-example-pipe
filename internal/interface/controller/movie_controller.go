@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"docker-go-example-pipe/internal/usecase"
 )
 
 type (
@@ -19,4 +20,12 @@ func (mc *MovieController) getMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"erro, payload inválido": err.Error()})
 		return
 	}
+
+	movie, err := mc.usecase.GetMovieByName(req.Name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"erro ao buscar filme": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"filme": movie})
 }
